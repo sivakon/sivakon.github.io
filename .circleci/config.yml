@@ -19,8 +19,8 @@ jobs:
       - run:
           name: push everything
           command: |
-            git config user.email "${EMAIL}"
-            git config user.name "${NAME}"
+            git config user.email "konanki.sivaram@gmail.com"
+            git config user.name "Sivaram Konanki"
             git status
             git add -A
             git commit -m "[skip ci] built from circleci and pushed"
