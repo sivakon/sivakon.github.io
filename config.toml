@@ -32,4 +32,4 @@ publishDir = "."
 
 [params]
     description = "Simple blog for hosting stuff."
-    footer = "&copy; [Travel DIO](https://ghe.rakuten-it.com/trvdio)"
+    footer = "&copy; [Siva](https://twitter.com/sivakon)"
