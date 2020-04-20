@@ -420,7 +420,6 @@ Kernels and their parameters can be chosen using cross validation introduced in 
 > Likelihood math is hand-written in Cross Entropy method
 
  
-
 We want the parameters $\theta$ that maximizes $p(\mathbf{y} | X, \boldsymbol{\theta})$. The likelihood of the data is the probability that the observed points were drawn from the model.
 
 We use log likelihood,
@@ -438,6 +437,7 @@ $$
 $$
 \mathbf{\Sigma}_{\mathbf{\theta}}=\mathbf{K}_{\mathbf{\theta}}(X, X)+v \mathbf{I}
 $$
+
 Results:
 
 $$
@@ -540,9 +540,7 @@ def update_posterior(x_new):
 
 same as 
 
-$$
-\hat{\mathbf{y}} | \mathbf{y} \sim \mathcal{N}(\underbrace{\mathbf{m}\left(X^{*}\right)+\mathbf{K}\left(X^{*}, X\right) \mathbf{K}(X, X)^{-1}(\mathbf{y}-\mathbf{m}(X))}_{\text {mean }}, \underbrace{\mathbf{K}\left(X^{*}, X^{*}\right)-\mathbf{K}\left(X^{*}, X\right) \mathbf{K}(X, X)^{-1} \mathbf{K}\left(X, X^{*}\right)}_{\text {covariance }})
-$$
+$$\hat{\mathbf{y}} | \mathbf{y} \sim \mathcal{N}(\underbrace{\mathbf{m}\left(X^{*}\right)+\mathbf{K}\left(X^{*}, X\right) \mathbf{K}(X, X)^{-1}(\mathbf{y}-\mathbf{m}(X))}_{\text {mean }}, \underbrace{\mathbf{K}\left(X^{*}, X^{*}\right)-\mathbf{K}\left(X^{*}, X\right) \mathbf{K}(X, X)^{-1} \mathbf{K}\left(X, X^{*}\right)}_{\text {covariance }})$$
 Note that the covariance does not depend on y. This distribution is often referred to as the posterior distribution.
 
 
@@ -563,8 +561,7 @@ that is easy to evaluate and differentiate (so that optimizing 𝛼(𝑥) is eas
 
 - Repeat until convergence:
 
-- Use the acquisition function to derive the next query point according to
-    $x_{n+1}=\arg \min \alpha(x)$
+- Use the acquisition function to derive the next query point according to $x_{n+1}=\arg \min \alpha(x)$
     
 
 Evaluate $f(x_{n+1})$
