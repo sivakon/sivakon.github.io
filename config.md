@@ -4,10 +4,10 @@ website.
 The website_* must be defined for the RSS to work
 -->
 @def website_title = "Sivaram Konanki"
-@def website_descr = "Example website using Franklin"
+@def website_descr = "My website using Franklin"
 @def website_url   = "https://tlienart.github.io/FranklinTemplates.jl/"
 
-@def author = "Septimia Zenobia"
+@def author = "Sivaram Konanki"
 
 <!--
 Add here global latex commands to use throughout your
