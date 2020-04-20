@@ -3,4 +3,4 @@
 # Personal notes
 
 
-- [Gaussian Processes](/posts/gp/index.html)
+- [Gaussian Processes](/gp/index.html)
