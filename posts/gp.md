@@ -497,7 +497,6 @@ where α ≥ 0 is a constant that controls the trade-off between exploration and
 ![original image](https://cdn.mathpix.com/snip/images/hTnw50c9dDwDJHh7c_Y4LTBuh6zdA1s5Y2jVxcqj17g.original.fullsize.png)
 
 
-
 ## Summary
 
 In essence, we have initial y, X for original objective function. We approximate using Guassian process using the formula
@@ -525,10 +524,9 @@ Remember the equation shown below has m(x*) which is E[f(x*)] which requires mai
 > Hence, updating posterior requires finding new design point and updating our gaussian process model. We use xnew and it's evaluation on out main objective function. Once we make our gaussian process model more robust after adequate iterations, our new design point is our minimum. For sampling new design point, refer to Lower confidence bound exploration.
 
 
-
 Taken from BO link. 
 
-```
+```python
 def update_posterior(x_new):
     y = f(x_new) # evaluate f at new point.
     X = torch.cat([gpmodel.X, x_new]) # incorporate new evaluation
@@ -543,10 +541,9 @@ def update_posterior(x_new):
 same as 
 
 $$
-\hat{\mathbf{y}} | \mathbf{y} \sim \mathcal{N}(\underbrace{\mathbf{m}\left(X^{*}\right)+\mathbf{K}\left(X^{*}, X\right) \mathbf{K}(X, X)^{-1}(\mathbf{y}-\mathbf{m}(X))}_{\text {mean }}) \underbrace{\mathbf{K}\left(X^{*}, X^{*}\right)-\mathbf{K}\left(X^{*}, X\right) \mathbf{K}(X, X)^{-1} \mathbf{K}\left(X, X^{*}\right)}_{\text {covariance }})
+\hat{\mathbf{y}} | \mathbf{y} \sim \mathcal{N}(\underbrace{\mathbf{m}\left(X^{*}\right)+\mathbf{K}\left(X^{*}, X\right) \mathbf{K}(X, X)^{-1}(\mathbf{y}-\mathbf{m}(X))}_{\text {mean }}, \underbrace{\mathbf{K}\left(X^{*}, X^{*}\right)-\mathbf{K}\left(X^{*}, X\right) \mathbf{K}(X, X)^{-1} \mathbf{K}\left(X, X^{*}\right)}_{\text {covariance }})
 $$
-Note that the covariance does not depend on y. This distribution is often referred to as the posterior distribution
-
+Note that the covariance does not depend on y. This distribution is often referred to as the posterior distribution.
 
 
 After doing this for a multiple points, we finally converge to our global minimum on our main objective function. 
@@ -555,9 +552,9 @@ After doing this for a multiple points, we finally converge to our global minimu
 
 The Bayesian optimization strategy works as follows:
 
-- Place a prior on the objective function 𝑓
+- Place a prior on the objective function $f$
 
-- Each time we evaluate 𝑓 at a new point $𝑥_𝑛$, we update our model for 𝑓(𝑥). This model serves as a surrogate objective function and reflects our beliefs about 𝑓 (in particular it reflects our beliefs about where we expect 𝑓(𝑥) to be close to 𝑓(𝑥∗)
+- Each time we evaluate $f$ at a new point $𝑥_𝑛$, we update our model for 𝑓(𝑥). This model serves as a surrogate objective function and reflects our beliefs about 𝑓 (in particular it reflects our beliefs about where we expect 𝑓(𝑥) to be close to 𝑓(𝑥∗)
 
 - Since we are being Bayesian, our beliefs are encoded in a posterior that allows us to systematically reason about the uncertainty of our model predictions.
 
@@ -570,5 +567,5 @@ that is easy to evaluate and differentiate (so that optimizing 𝛼(𝑥) is eas
     $x_{n+1}=\arg \min \alpha(x)$
     
 
-Evaluate $𝑓(𝑥_𝑛+1)$
+Evaluate $f(x_{n+1})$
 and update the posterior.
