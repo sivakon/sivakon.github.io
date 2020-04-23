@@ -5,3 +5,4 @@
 # Personal notes
 
 - [Gaussian Processes](/gp/)
+- [Easy concurrent scraping with Scala with Akka Streams](/scraping/)
