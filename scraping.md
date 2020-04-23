@@ -1,3 +1,8 @@
+@def title = "Easy concurrent scraping with Scala with Akka Streams"
+@def date = Dates.today()
+@def hasmath = true
+@def hascode = true
+
 **Step 1**: Download ammonite
 
 ```bash
