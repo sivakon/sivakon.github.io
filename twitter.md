@@ -1,4 +1,5 @@
-## Twitter API in Swift
+@def title = "Twitter API in Swift"
+@def hascode = true
 
 Analyzing tweets with twitter API in Swift without any external libraries
 
