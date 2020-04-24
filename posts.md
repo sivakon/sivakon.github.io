@@ -6,3 +6,4 @@
 
 - [Gaussian Processes](/gp/)
 - [Easy concurrent scraping with Scala with Akka Streams](/scraping/)
+- [Twitter API in swift](/twitter/)
