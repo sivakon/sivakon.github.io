@@ -7,6 +7,7 @@
 - Created a rollup plugin with [Katex](https://obedm503.github.io/showdown-katex) and [Highlight](https://github.com/Bloggify/showdown-highlight)
 - Everything is prerendered on server just like [Franklin.jl](https://github.com/tlienart/Franklin.jl)
 
+
 Additional sapper details below.
 
 Note:
