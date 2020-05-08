@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-  <title>Sapper project template</title>
+<title>Codex</title>
 </svelte:head>
 
 {#each posts as post}

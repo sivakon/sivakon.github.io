@@ -3,7 +3,7 @@ import all from '../posts/*.md'
 
 export const posts = _.chain(all).map(transform).orderBy('date', 'desc').value()
 
-console.log(posts)
+// console.log(posts)
 
 export function findPost(permalink) {
     return _.find(posts, {permalink})
