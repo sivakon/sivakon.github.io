@@ -123,8 +123,11 @@ ul li a:hover:after {
   transform: scaleY(1);
   opacity: 1;
 }
-
 </style>
+
+<svelte:head>
+<style>img[alt=image] { width: 600px; }</style>
+</svelte:head>
 
 <div class="site-header-borders">
     <div class="site-header">

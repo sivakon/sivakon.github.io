@@ -1,10 +1,8 @@
 ---
-title: Guassian processes
-summary: Related to Guassian process and their application in Bayesian optimization
+title: Gaussian process and Bayesian optimization
+summary: Optimization, sampling and gaussian processes
 date: 2020-04-15
 ---
-
-# Gaussian process and Bayesian optimization
 
 This should be pasted in [upmath](https://upmath.me) to get all the latex equations in SVG format for posting on svbtle blog. I use mathpix notes because it syncs all my snips and I can insert raw images served from Mathpix CDN.
 
@@ -20,7 +18,7 @@ These are sampling plans for covering the search space when we have limited reso
 
 The _full factorial_ sampling plan places a grid of evenly spaced points over the search space. This approach is easy to implement, does not rely on randomness, and covers the space, but it uses a large number of points. Sampling grid is bounded as shown in the picture
 
-![original image](https://cdn.mathpix.com/snip/images/0vpLGVPhZB1DnjFeZUd7XPn03bpK17u0ZbIMdYpBuPM.original.fullsize.png)
+![image](https://cdn.mathpix.com/snip/images/0vpLGVPhZB1DnjFeZUd7XPn03bpK17u0ZbIMdYpBuPM.original.fullsize.png)
 
 **Exponentially increase design points when the dimensionality high.**
 
@@ -31,13 +29,12 @@ Draw m random samples over the design space.
 
 A uniform projection plan is a sampling plan over a discrete grid where the dis- tribution over each dimension is uniform.
 
-![original image](https://cdn.mathpix.com/snip/images/o_0tCEn2Rb6fSu52cE72G_lRFSC69D1wjyN1d1vE_M0.original.fullsize.png)
-
+![image](https://cdn.mathpix.com/snip/images/o_0tCEn2Rb6fSu52cE72G_lRFSC69D1wjyN1d1vE_M0.original.fullsize.png)
 
 ### Stratified sampling
 
 An $m \times m$ grid could miss important information due to systematic regularities. Cells are sampled at a point chosen uni- formly at random from within the cell rather than at the cell’s center
 
-![original image](https://cdn.mathpix.com/snip/images/hchZo2Qlz8EyP5bTXzv3vrly-u_VYjYSio_LuyLoPw0.original.fullsize.png)
+![image](https://cdn.mathpix.com/snip/images/hchZo2Qlz8EyP5bTXzv3vrly-u_VYjYSio_LuyLoPw0.original.fullsize.png)
 
 There are several other sampling plans. We skip for now.
