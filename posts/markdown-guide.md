@@ -6,6 +6,13 @@ date: 2020-01-02
 
 ***
 
+**Caveats:**
+
+- All the latex formulae should be replaced with `\\{` and `\\}` from `\{` and `\}` unless using latex code block
+- All images must be tagged with `image`
+
+***
+
 **Tutorial on Math:**
 
 There are there ways to declare math for server-side pre-rendering.

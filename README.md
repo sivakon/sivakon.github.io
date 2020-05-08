@@ -1,3 +1,8 @@
+# Caveats:
+
+- All the latex formulae should be replaced with `\\{` and `\\}` from `\{` and `\}` unless using latex code block
+- All images must be tagged with `image`
+
 # Additions
 
 - Instead of `showdown-highlight`, I decided to use `highlight.js` from CDN.
