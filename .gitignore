@@ -1,4 +1,6 @@
-__site/
 .DS_Store
-franklin
-franklin.pub
+/node_modules/
+/src/node_modules/@sapper/
+yarn-error.log
+/cypress/screenshots/
+/__sapper__/
