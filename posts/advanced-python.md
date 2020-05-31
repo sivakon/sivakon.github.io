@@ -254,3 +254,43 @@ maze = Maze()
 print(maze)
 
 ```
+
+
+Another small note about property in Python class.
+
+- If it's a property, we can call the property directly without parans
+
+Example
+
+```python
+class Stack(Generic[T]):
+    def __init__(self) -> None:
+        self._container = []
+
+    def empty(self) -> bool:
+        return not self._container
+
+    ...
+
+a = Stack[int]()
+a.push(10)
+print(a.empty())
+
+
+class StackWithEmptyProperty(Generic[T]):
+    def __init__(self) -> None:
+        self._container = []
+
+    @property
+    def empty(self) -> bool:
+        return not self._container
+
+    ...
+
+a = Stack[int]()
+a.push(10)
+print(a.empty)
+
+
+```
+
