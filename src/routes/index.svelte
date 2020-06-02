@@ -13,4 +13,5 @@
     </a>
     <p>{post.summary}</p>
   </article>
+  <br/>
 {/each}

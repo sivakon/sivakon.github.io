@@ -1,6 +1,6 @@
 ---
 title: Example markdown post
-summary: Testing markdown, created rollup plugin to parse KaTeX
+summary: Testing markdown for this blog engine, created rollup plugin to parse KaTeX.
 date: 2020-01-02
 ---
 
@@ -32,9 +32,9 @@ There are there ways to declare math for server-side pre-rendering.
 }
 ```
 
-Math $a=2$
+Inline Math with `$a=2$` $a=2$
 
-Here, have some $$\pi$$.
+Here, have some black math with `$$\pi$$` $$\pi$$.
 
 another math $$a=2$$
 

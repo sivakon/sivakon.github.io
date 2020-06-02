@@ -1,6 +1,6 @@
 ---
-title: Hello World 2
-summary: This is a post
+title: Test post
+summary: Test summary
 date: 2020-01-01
 ---
 
