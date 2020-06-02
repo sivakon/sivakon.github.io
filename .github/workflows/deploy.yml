@@ -13,3 +13,8 @@ jobs:
       - uses: antoncarlsson/deploy-sapper-to-gh-pages-action@v1.1.6
         with:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      - uses: w9jds/firebase-action@master
+        with: 
+          args: deploy --only hosting:kons-dev-preview
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

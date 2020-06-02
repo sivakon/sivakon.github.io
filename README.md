@@ -3,6 +3,11 @@
 - All the latex formulae should be replaced with `\\{` and `\\}` from `\{` and `\}` unless using latex code block
 - All images must be tagged with `image`
 
+# Hosted version 
+
+Firebase hosted version live at
+https://kons-dev-preview.web.app/
+
 # Additions
 
 - Instead of `showdown-highlight`, I decided to use `highlight.js` from CDN.
