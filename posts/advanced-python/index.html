@@ -1,0 +1,203 @@
+<!doctype html> <html lang=en> <head> <meta charset=utf-8> <meta content="width=device-width,initial-scale=1" name=viewport> <meta content=#333333 name=theme-color> <base href=/ > <link href=global.css rel=stylesheet> <link href=manifest.json rel=manifest crossorigin=use-credentials> <link href=favicon.png rel=icon type=image/png> <link href=client/client-cc8f0b39.css rel=stylesheet><link href=client/client-599d02fe.css rel=stylesheet> <title>Advanced python</title><style>img[alt=image]{width:600px}</style><link href=https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css rel=stylesheet crossorigin=anonymous integrity=sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq><link href=dracula.css rel=stylesheet> <link href=/client/client.7e23340b.js rel=modulepreload as=script crossorigin=use-credentials><link href=/client/client-cc8f0b39.css rel=preload as=style><link href=/client/client-599d02fe.css rel=preload as=style><link href=/client/[permalink].35a95ac4.js rel=modulepreload as=script crossorigin=use-credentials><link href=/client/client.11b53997.js rel=modulepreload as=script crossorigin=use-credentials><link href=/client/posts.c8616fe0.js rel=modulepreload as=script crossorigin=use-credentials><link href=/client/inject_styles.5607aec6.js rel=modulepreload as=script crossorigin=use-credentials></head> <body> <div id=sapper> <div class="svelte-uv9brr site-header-borders"><div class="svelte-uv9brr site-header"><nav class="svelte-uv9brr nav"><a class="svelte-uv9brr logo" href=/ >codex</a> <ul class="svelte-uv9brr navbar"><li class=svelte-uv9brr><a class=svelte-uv9brr href=/about>about</a></li> <li class=svelte-uv9brr><a class=svelte-uv9brr href=https://github.com/trickster/trickster.github.io/tree/dev target=_blank>github</a></ul></nav></div></div> <main class=svelte-uv9brr> <h1>Advanced python</h1> <p><em><strong>Disclaimer: Everything below is typed Python</strong></em></p> <h2 id=dataclasses>Dataclasses</h2> <p>The following snippet, desugars to</p> <p><em>Snippet 1:</em></p> <pre><code class="hljs language-python python"><span class=hljs-meta>@dataclass</span>
+<span class=hljs-class><span class=hljs-keyword>class</span> <span class=hljs-title>Person</span>:</span>
+    name: str
+    age: float</code></pre> <p><em>Snippet 2:</em></p> <pre><code class="hljs language-python python"><span class=hljs-class><span class=hljs-keyword>class</span> <span class=hljs-title>Person</span>:</span>
+    <span class=hljs-function><span class=hljs-keyword>def</span> <span class=hljs-title>__init__</span><span class=hljs-params>(self, name: str, age: float)</span>:</span>
+        self.name = name
+        self.age = age</code></pre> <p>There are two patterns to create dataclasses</p> <ol> <li>Immutable class</li> <li>Mutable class</li> </ol> <h3 id=immutable-dataclasses>Immutable dataclasses</h3> <p><em>Snippet 3:</em></p> <pre><code class="hljs language-python python"><span class=hljs-meta>@dataclass(frozen=True)</span>
+<span class=hljs-class><span class=hljs-keyword>class</span> <span class=hljs-title>Person</span>:</span>
+
+    name: str
+    age: float
+
+<span class=hljs-meta>    @classmethod</span>
+    <span class=hljs-function><span class=hljs-keyword>def</span> <span class=hljs-title>from_birthyear</span><span class=hljs-params>(cls, name: str, birth_year: int)</span> -> Person:</span>
+        <span class=hljs-keyword>return</span> cls(name, date.today().year - birth_year)
+
+<span class=hljs-meta>    @staticmethod</span>
+    <span class=hljs-function><span class=hljs-keyword>def</span> <span class=hljs-title>from_fathers_age</span><span class=hljs-params>(
+        name: str, fathers_age: int, diff_from_fathers_age: int
+    )</span> -> Person:</span>
+        <span class=hljs-keyword>return</span> Person(name, fathers_age - diff_from_fathers_age)
+
+<span class=hljs-meta>    @staticmethod</span>
+    <span class=hljs-function><span class=hljs-keyword>def</span> <span class=hljs-title>nationality</span><span class=hljs-params>()</span> -> str:</span>
+        <span class=hljs-string>""" All are japanese """</span>
+        <span class=hljs-keyword>return</span> <span class=hljs-string>"Japan"</span>
+
+
+print(Person.nationality())
+
+print(Person.from_fathers_age(<span class=hljs-string>"Siva"</span>, <span class=hljs-number>60</span>, <span class=hljs-number>32</span>))
+
+me = Person.from_birthyear(<span class=hljs-string>"Siva"</span>, <span class=hljs-number>1992</span>)
+print(me.age)</code></pre> <h3 id=mutable-dataclasses>Mutable dataclasses</h3> <p>Field names can start with underscore, so that <code>@property</code> getters can use the method names without underscore at the beginning. Private fields are to be started with double underscores. <code>name</code> does not work as a field name, but <code>_name</code> is fine. We can then create <code>@property</code> with method name as <code>name</code>. It's a good practice to <strong>access the fields using property getters</strong>.</p> <p><em>Snippet 4:</em></p> <pre><code class="hljs language-python python"><span class=hljs-meta>@dataclass</span>
+<span class=hljs-class><span class=hljs-keyword>class</span> <span class=hljs-title>MutablePerson</span>:</span>
+    <span class=hljs-string>"""
+    Another note:
+    _name works but not name, because I created a property name "name" was created for it
+    """</span>
+
+    _name: str
+    __age: float
+
+<span class=hljs-meta>    @classmethod</span>
+    <span class=hljs-function><span class=hljs-keyword>def</span> <span class=hljs-title>from_birthyear</span><span class=hljs-params>(cls, name: str, birth_year: int)</span> -> Person:</span>
+        <span class=hljs-keyword>return</span> cls(name, date.today().year - birth_year)
+
+<span class=hljs-meta>    @staticmethod</span>
+    <span class=hljs-function><span class=hljs-keyword>def</span> <span class=hljs-title>from_fathers_age</span><span class=hljs-params>(
+        name: str, fathers_age: int, diff_from_fathers_age: int
+    )</span> -> Person:</span>
+        <span class=hljs-keyword>return</span> Person(name, fathers_age - diff_from_fathers_age)
+
+<span class=hljs-meta>    @staticmethod</span>
+    <span class=hljs-function><span class=hljs-keyword>def</span> <span class=hljs-title>nationality</span><span class=hljs-params>()</span> -> str:</span>
+        <span class=hljs-string>""" All are japanese """</span>
+        <span class=hljs-keyword>return</span> <span class=hljs-string>"Japan"</span>
+
+<span class=hljs-meta>    @property</span>
+    <span class=hljs-function><span class=hljs-keyword>def</span> <span class=hljs-title>name</span><span class=hljs-params>(self)</span> -> str:</span>
+        <span class=hljs-keyword>return</span> self._name
+
+<span class=hljs-meta>    @name.setter</span>
+    <span class=hljs-function><span class=hljs-keyword>def</span> <span class=hljs-title>name</span><span class=hljs-params>(self, name_value)</span> -> <span class=hljs-keyword>None</span>:</span>
+        self._name = name_value
+
+
+print(<span class=hljs-string>"-"</span> * <span class=hljs-number>100</span>)
+print(<span class=hljs-string>"mutable person"</span>)
+print(MutablePerson(<span class=hljs-string>"Siva"</span>, <span class=hljs-number>28</span>)._MutablePerson__age)
+print(<span class=hljs-string>"-"</span> * <span class=hljs-number>100</span>)
+
+print(MutablePerson(<span class=hljs-string>"Noona"</span>, <span class=hljs-number>28</span>)._name)
+
+print(MutablePerson.from_birthyear(<span class=hljs-string>"Siva"</span>, <span class=hljs-number>1992</span>).name)
+print(
+    MutablePerson.from_birthyear(<span class=hljs-string>"Siva"</span>, <span class=hljs-number>1992</span>)._name
+)  <span class=hljs-comment># generally not preferred, you create a property getter like above</span>
+
+siva = MutablePerson(<span class=hljs-string>"Siva"</span>, <span class=hljs-number>28</span>)
+print(siva.name)
+siva.name += <span class=hljs-string>"ram"</span>
+print(siva.name)
+
+print(<span class=hljs-string>"-"</span> * <span class=hljs-number>100</span>)</code></pre> <p>Another example</p> <p><em>Snippet 5:</em></p> <pre><code class="hljs language-python python"><span class=hljs-meta>@dataclass</span>
+<span class=hljs-class><span class=hljs-keyword>class</span> <span class=hljs-title>Employee</span>:</span>
+
+    _name: str
+    _company: str
+    _retired: str = <span class=hljs-string>"NO"</span>
+
+<span class=hljs-meta>    @property</span>
+    <span class=hljs-function><span class=hljs-keyword>def</span> <span class=hljs-title>company</span><span class=hljs-params>(self)</span>:</span>
+        <span class=hljs-keyword>return</span> self._company
+
+<span class=hljs-meta>    @company.setter</span>
+    <span class=hljs-function><span class=hljs-keyword>def</span> <span class=hljs-title>company</span><span class=hljs-params>(self, value)</span>:</span>
+        self._company = value
+
+
+e = Employee(<span class=hljs-string>"Siva"</span>, <span class=hljs-string>"Rakuten"</span>)
+print(<span class=hljs-string>"Company name is :"</span>, e.company)
+e.company = <span class=hljs-string>"Google"</span>
+print(<span class=hljs-string>"Company name is :"</span>, e.company)</code></pre> <p><br></p> <h2 id=staticmethod-vs-classmethod><code>@staticmethod</code> vs <code>@classmethod</code></h2> <p>We can use either annotation to create a class from their methods. <code>@classmethod</code> takes class as first argument. As a rule of thumb, if your methods accesses other variables/methods in the class, we can use <code>@classmethod</code>. <code>@staticmethod</code> does not access any of the classes's properties. We can also use <code>@staticmethod</code> to create a class like <em>Snipprt 3:</em>.</p> <p><br></p> <h2 id=typing-in-python>Typing in Python</h2> <p>If we want to use class types inside the class, we need to use this import at the top of the file. This will become default in Python 4.</p> <pre><code class="hljs language-python python"><span class=hljs-keyword>from</span> __future__ <span class=hljs-keyword>import</span> annotations</code></pre> <p>For example, the return type of <code>from_birthyear</code> is <code>Person</code> but this only works when we import <code>annotations</code></p> <pre><code class="hljs language-python python"><span class=hljs-meta>@dataclass(frozen=True)</span>
+<span class=hljs-class><span class=hljs-keyword>class</span> <span class=hljs-title>Person</span>:</span>
+
+    ...
+
+<span class=hljs-meta>    @classmethod</span>
+    <span class=hljs-function><span class=hljs-keyword>def</span> <span class=hljs-title>from_birthyear</span><span class=hljs-params>(cls, name: str, birth_year: int)</span> -> Person:</span>
+        <span class=hljs-keyword>return</span> cls(name, date.today().year - birth_year)
+
+    ...</code></pre> <h2 id=normal-classes>Normal classes</h2> <p>For arbitrary initialization of class objects, we always use <code>__init__</code>. We cannot create <code>_randomly_fill</code> when we use <code>@dataclass</code>.</p> <pre><code class="hljs language-python python"><span class=hljs-keyword>from</span> dataclasses <span class=hljs-keyword>import</span> dataclass
+
+<span class=hljs-keyword>from</span> enum <span class=hljs-keyword>import</span> Enum
+<span class=hljs-keyword>from</span> typing <span class=hljs-keyword>import</span> NamedTuple, List
+
+
+<span class=hljs-class><span class=hljs-keyword>class</span> <span class=hljs-title>Cell</span><span class=hljs-params>(str, Enum)</span>:</span>
+    EMPTY = <span class=hljs-string>" "</span>
+    BLOCKED = <span class=hljs-string>"X"</span>
+    START = <span class=hljs-string>"S"</span>
+    GOAL = <span class=hljs-string>"G"</span>
+    PATH = <span class=hljs-string>"*"</span>
+
+
+<span class=hljs-string>"""
+# Alternate version
+class MazeLocation(NamedTuple):
+    row: int
+    column: int
+"""</span>
+
+
+<span class=hljs-meta>@dataclass</span>
+<span class=hljs-class><span class=hljs-keyword>class</span> <span class=hljs-title>MazeLocation</span>:</span>
+
+    row: int
+    column: int
+
+
+<span class=hljs-class><span class=hljs-keyword>class</span> <span class=hljs-title>Maze</span>:</span>
+    <span class=hljs-function><span class=hljs-keyword>def</span> <span class=hljs-title>__init__</span><span class=hljs-params>(
+        self,
+        rows: int = <span class=hljs-number>10</span>,
+        columns: int = <span class=hljs-number>10</span>,
+        sparseness: float = <span class=hljs-number>0.2</span>,
+        start: MazeLocation = MazeLocation<span class=hljs-params>(<span class=hljs-number>0</span>, <span class=hljs-number>0</span>)</span>,
+        goal: MazeLocation = MazeLocation<span class=hljs-params>(<span class=hljs-number>9</span>, <span class=hljs-number>9</span>)</span>,
+    )</span> -> <span class=hljs-keyword>None</span>:</span>
+        self._rows = rows
+        self._columns = columns
+        self.start: MazeLocation = start
+        self.goal: MazeLocation = goal
+        <span class=hljs-comment># fill grid with empty cells</span>
+        self._grid: List[List[Cell]] = [
+            [Cell.EMPTY <span class=hljs-keyword>for</span> c <span class=hljs-keyword>in</span> range(columns)] <span class=hljs-keyword>for</span> r <span class=hljs-keyword>in</span> range(rows)
+        ]
+        self._randomly_fill(rows, columns, sparseness)
+        self._grid[start.row][start.column] = Cell.START
+        self._grid[goal.row][goal.column] = Cell.GOAL
+
+    <span class=hljs-function><span class=hljs-keyword>def</span> <span class=hljs-title>_randomly_fill</span><span class=hljs-params>(self, rows: int, columns: int, sparseness: float)</span>:</span>
+        <span class=hljs-keyword>for</span> row <span class=hljs-keyword>in</span> range(rows):
+            <span class=hljs-keyword>for</span> column <span class=hljs-keyword>in</span> range(columns):
+                <span class=hljs-keyword>if</span> random.uniform(<span class=hljs-number>0</span>, <span class=hljs-number>1.0</span>) &lt; <span class=hljs-number>0.2</span>:
+                    self._grid[row][column] = Cell.BLOCKED
+
+    <span class=hljs-function><span class=hljs-keyword>def</span> <span class=hljs-title>__str__</span><span class=hljs-params>(self)</span> -> str:</span>
+        output: str = <span class=hljs-string>""</span>
+        <span class=hljs-keyword>for</span> row <span class=hljs-keyword>in</span> self._grid:
+            output += <span class=hljs-string>""</span>.join([c.value <span class=hljs-keyword>for</span> c <span class=hljs-keyword>in</span> row]) + <span class=hljs-string>"\n"</span>
+        <span class=hljs-keyword>return</span> output
+
+
+maze = Maze()
+print(maze)</code></pre> <p>Another small note about property in Python class.</p> <ul> <li>If it's a property, we can call the property directly without parans</li> </ul> <p>Example</p> <pre><code class="hljs language-python python"><span class=hljs-class><span class=hljs-keyword>class</span> <span class=hljs-title>Stack</span><span class=hljs-params>(Generic[T])</span>:</span>
+    <span class=hljs-function><span class=hljs-keyword>def</span> <span class=hljs-title>__init__</span><span class=hljs-params>(self)</span> -> <span class=hljs-keyword>None</span>:</span>
+        self._container = []
+
+    <span class=hljs-function><span class=hljs-keyword>def</span> <span class=hljs-title>empty</span><span class=hljs-params>(self)</span> -> bool:</span>
+        <span class=hljs-keyword>return</span> <span class=hljs-keyword>not</span> self._container
+
+    ...
+
+a = Stack[int]()
+a.push(<span class=hljs-number>10</span>)
+print(a.empty())
+
+
+<span class=hljs-class><span class=hljs-keyword>class</span> <span class=hljs-title>StackWithEmptyProperty</span><span class=hljs-params>(Generic[T])</span>:</span>
+    <span class=hljs-function><span class=hljs-keyword>def</span> <span class=hljs-title>__init__</span><span class=hljs-params>(self)</span> -> <span class=hljs-keyword>None</span>:</span>
+        self._container = []
+
+<span class=hljs-meta>    @property</span>
+    <span class=hljs-function><span class=hljs-keyword>def</span> <span class=hljs-title>empty</span><span class=hljs-params>(self)</span> -> bool:</span>
+        <span class=hljs-keyword>return</span> <span class=hljs-keyword>not</span> self._container
+
+    ...
+
+a = Stack[int]()
+a.push(<span class=hljs-number>10</span>)
+print(a.empty)</code></pre></main></div> <script>__SAPPER__={baseUrl:"",preloaded:[void 0,null,{post:{title:"Advanced python",summary:"Data classes, property setters and getters",date:new Date(1590624000000),filename:"advanced-python.md",html:"\u003Cp\u003E\u003Cem\u003E\u003Cstrong\u003EDisclaimer: Everything below is typed Python\u003C\u002Fstrong\u003E\u003C\u002Fem\u003E\u003C\u002Fp\u003E\n\u003Ch2 id=\"dataclasses\"\u003EDataclasses\u003C\u002Fh2\u003E\n\u003Cp\u003EThe following snippet, desugars to\u003C\u002Fp\u003E\n\u003Cp\u003E\u003Cem\u003ESnippet 1:\u003C\u002Fem\u003E\u003C\u002Fp\u003E\n\u003Cpre\u003E\u003Ccode class=\"hljs python language-python\"\u003E\u003Cspan class=\"hljs-meta\"\u003E@dataclass\u003C\u002Fspan\u003E\n\u003Cspan class=\"hljs-class\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Eclass\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003EPerson\u003C\u002Fspan\u003E:\u003C\u002Fspan\u003E\n    name: str\n    age: float\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Cp\u003E\u003Cem\u003ESnippet 2:\u003C\u002Fem\u003E\u003C\u002Fp\u003E\n\u003Cpre\u003E\u003Ccode class=\"hljs python language-python\"\u003E\u003Cspan class=\"hljs-class\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Eclass\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003EPerson\u003C\u002Fspan\u003E:\u003C\u002Fspan\u003E\n    \u003Cspan class=\"hljs-function\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Edef\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003E__init__\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E(self, name: str, age: float)\u003C\u002Fspan\u003E:\u003C\u002Fspan\u003E\n        self.name = name\n        self.age = age\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Cp\u003EThere are two patterns to create dataclasses\u003C\u002Fp\u003E\n\u003Col\u003E\n\u003Cli\u003EImmutable class\u003C\u002Fli\u003E\n\u003Cli\u003EMutable class\u003C\u002Fli\u003E\n\u003C\u002Fol\u003E\n\u003Ch3 id=\"immutable-dataclasses\"\u003EImmutable dataclasses\u003C\u002Fh3\u003E\n\u003Cp\u003E\u003Cem\u003ESnippet 3:\u003C\u002Fem\u003E\u003C\u002Fp\u003E\n\u003Cpre\u003E\u003Ccode class=\"hljs python language-python\"\u003E\u003Cspan class=\"hljs-meta\"\u003E@dataclass(frozen=True)\u003C\u002Fspan\u003E\n\u003Cspan class=\"hljs-class\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Eclass\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003EPerson\u003C\u002Fspan\u003E:\u003C\u002Fspan\u003E\n\n    name: str\n    age: float\n\n\u003Cspan class=\"hljs-meta\"\u003E    @classmethod\u003C\u002Fspan\u003E\n    \u003Cspan class=\"hljs-function\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Edef\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003Efrom_birthyear\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E(cls, name: str, birth_year: int)\u003C\u002Fspan\u003E -&gt; Person:\u003C\u002Fspan\u003E\n        \u003Cspan class=\"hljs-keyword\"\u003Ereturn\u003C\u002Fspan\u003E cls(name, date.today().year - birth_year)\n\n\u003Cspan class=\"hljs-meta\"\u003E    @staticmethod\u003C\u002Fspan\u003E\n    \u003Cspan class=\"hljs-function\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Edef\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003Efrom_fathers_age\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E(\n        name: str, fathers_age: int, diff_from_fathers_age: int\n    )\u003C\u002Fspan\u003E -&gt; Person:\u003C\u002Fspan\u003E\n        \u003Cspan class=\"hljs-keyword\"\u003Ereturn\u003C\u002Fspan\u003E Person(name, fathers_age - diff_from_fathers_age)\n\n\u003Cspan class=\"hljs-meta\"\u003E    @staticmethod\u003C\u002Fspan\u003E\n    \u003Cspan class=\"hljs-function\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Edef\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003Enationality\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E()\u003C\u002Fspan\u003E -&gt; str:\u003C\u002Fspan\u003E\n        \u003Cspan class=\"hljs-string\"\u003E\"\"\" All are japanese \"\"\"\u003C\u002Fspan\u003E\n        \u003Cspan class=\"hljs-keyword\"\u003Ereturn\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-string\"\u003E\"Japan\"\u003C\u002Fspan\u003E\n\n\nprint(Person.nationality())\n\nprint(Person.from_fathers_age(\u003Cspan class=\"hljs-string\"\u003E\"Siva\"\u003C\u002Fspan\u003E, \u003Cspan class=\"hljs-number\"\u003E60\u003C\u002Fspan\u003E, \u003Cspan class=\"hljs-number\"\u003E32\u003C\u002Fspan\u003E))\n\nme = Person.from_birthyear(\u003Cspan class=\"hljs-string\"\u003E\"Siva\"\u003C\u002Fspan\u003E, \u003Cspan class=\"hljs-number\"\u003E1992\u003C\u002Fspan\u003E)\nprint(me.age)\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Ch3 id=\"mutable-dataclasses\"\u003EMutable dataclasses\u003C\u002Fh3\u003E\n\u003Cp\u003EField names can start with underscore, so that \u003Ccode\u003E@property\u003C\u002Fcode\u003E getters can use the method names without underscore at the beginning. Private fields are to be started with double underscores. \u003Ccode\u003Ename\u003C\u002Fcode\u003E does not work as a field name, but \u003Ccode\u003E_name\u003C\u002Fcode\u003E is fine. We can then create \u003Ccode\u003E@property\u003C\u002Fcode\u003E with method name as \u003Ccode\u003Ename\u003C\u002Fcode\u003E. It's a good practice to \u003Cstrong\u003Eaccess the fields using property getters\u003C\u002Fstrong\u003E.\u003C\u002Fp\u003E\n\u003Cp\u003E\u003Cem\u003ESnippet 4:\u003C\u002Fem\u003E\u003C\u002Fp\u003E\n\u003Cpre\u003E\u003Ccode class=\"hljs python language-python\"\u003E\u003Cspan class=\"hljs-meta\"\u003E@dataclass\u003C\u002Fspan\u003E\n\u003Cspan class=\"hljs-class\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Eclass\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003EMutablePerson\u003C\u002Fspan\u003E:\u003C\u002Fspan\u003E\n    \u003Cspan class=\"hljs-string\"\u003E\"\"\"\n    Another note:\n    _name works but not name, because I created a property name \"name\" was created for it\n    \"\"\"\u003C\u002Fspan\u003E\n\n    _name: str\n    __age: float\n\n\u003Cspan class=\"hljs-meta\"\u003E    @classmethod\u003C\u002Fspan\u003E\n    \u003Cspan class=\"hljs-function\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Edef\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003Efrom_birthyear\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E(cls, name: str, birth_year: int)\u003C\u002Fspan\u003E -&gt; Person:\u003C\u002Fspan\u003E\n        \u003Cspan class=\"hljs-keyword\"\u003Ereturn\u003C\u002Fspan\u003E cls(name, date.today().year - birth_year)\n\n\u003Cspan class=\"hljs-meta\"\u003E    @staticmethod\u003C\u002Fspan\u003E\n    \u003Cspan class=\"hljs-function\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Edef\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003Efrom_fathers_age\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E(\n        name: str, fathers_age: int, diff_from_fathers_age: int\n    )\u003C\u002Fspan\u003E -&gt; Person:\u003C\u002Fspan\u003E\n        \u003Cspan class=\"hljs-keyword\"\u003Ereturn\u003C\u002Fspan\u003E Person(name, fathers_age - diff_from_fathers_age)\n\n\u003Cspan class=\"hljs-meta\"\u003E    @staticmethod\u003C\u002Fspan\u003E\n    \u003Cspan class=\"hljs-function\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Edef\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003Enationality\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E()\u003C\u002Fspan\u003E -&gt; str:\u003C\u002Fspan\u003E\n        \u003Cspan class=\"hljs-string\"\u003E\"\"\" All are japanese \"\"\"\u003C\u002Fspan\u003E\n        \u003Cspan class=\"hljs-keyword\"\u003Ereturn\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-string\"\u003E\"Japan\"\u003C\u002Fspan\u003E\n\n\u003Cspan class=\"hljs-meta\"\u003E    @property\u003C\u002Fspan\u003E\n    \u003Cspan class=\"hljs-function\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Edef\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003Ename\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E(self)\u003C\u002Fspan\u003E -&gt; str:\u003C\u002Fspan\u003E\n        \u003Cspan class=\"hljs-keyword\"\u003Ereturn\u003C\u002Fspan\u003E self._name\n\n\u003Cspan class=\"hljs-meta\"\u003E    @name.setter\u003C\u002Fspan\u003E\n    \u003Cspan class=\"hljs-function\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Edef\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003Ename\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E(self, name_value)\u003C\u002Fspan\u003E -&gt; \u003Cspan class=\"hljs-keyword\"\u003ENone\u003C\u002Fspan\u003E:\u003C\u002Fspan\u003E\n        self._name = name_value\n\n\nprint(\u003Cspan class=\"hljs-string\"\u003E\"-\"\u003C\u002Fspan\u003E * \u003Cspan class=\"hljs-number\"\u003E100\u003C\u002Fspan\u003E)\nprint(\u003Cspan class=\"hljs-string\"\u003E\"mutable person\"\u003C\u002Fspan\u003E)\nprint(MutablePerson(\u003Cspan class=\"hljs-string\"\u003E\"Siva\"\u003C\u002Fspan\u003E, \u003Cspan class=\"hljs-number\"\u003E28\u003C\u002Fspan\u003E)._MutablePerson__age)\nprint(\u003Cspan class=\"hljs-string\"\u003E\"-\"\u003C\u002Fspan\u003E * \u003Cspan class=\"hljs-number\"\u003E100\u003C\u002Fspan\u003E)\n\nprint(MutablePerson(\u003Cspan class=\"hljs-string\"\u003E\"Noona\"\u003C\u002Fspan\u003E, \u003Cspan class=\"hljs-number\"\u003E28\u003C\u002Fspan\u003E)._name)\n\nprint(MutablePerson.from_birthyear(\u003Cspan class=\"hljs-string\"\u003E\"Siva\"\u003C\u002Fspan\u003E, \u003Cspan class=\"hljs-number\"\u003E1992\u003C\u002Fspan\u003E).name)\nprint(\n    MutablePerson.from_birthyear(\u003Cspan class=\"hljs-string\"\u003E\"Siva\"\u003C\u002Fspan\u003E, \u003Cspan class=\"hljs-number\"\u003E1992\u003C\u002Fspan\u003E)._name\n)  \u003Cspan class=\"hljs-comment\"\u003E# generally not preferred, you create a property getter like above\u003C\u002Fspan\u003E\n\nsiva = MutablePerson(\u003Cspan class=\"hljs-string\"\u003E\"Siva\"\u003C\u002Fspan\u003E, \u003Cspan class=\"hljs-number\"\u003E28\u003C\u002Fspan\u003E)\nprint(siva.name)\nsiva.name += \u003Cspan class=\"hljs-string\"\u003E\"ram\"\u003C\u002Fspan\u003E\nprint(siva.name)\n\nprint(\u003Cspan class=\"hljs-string\"\u003E\"-\"\u003C\u002Fspan\u003E * \u003Cspan class=\"hljs-number\"\u003E100\u003C\u002Fspan\u003E)\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Cp\u003EAnother example\u003C\u002Fp\u003E\n\u003Cp\u003E\u003Cem\u003ESnippet 5:\u003C\u002Fem\u003E\u003C\u002Fp\u003E\n\u003Cpre\u003E\u003Ccode class=\"hljs python language-python\"\u003E\u003Cspan class=\"hljs-meta\"\u003E@dataclass\u003C\u002Fspan\u003E\n\u003Cspan class=\"hljs-class\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Eclass\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003EEmployee\u003C\u002Fspan\u003E:\u003C\u002Fspan\u003E\n\n    _name: str\n    _company: str\n    _retired: str = \u003Cspan class=\"hljs-string\"\u003E\"NO\"\u003C\u002Fspan\u003E\n\n\u003Cspan class=\"hljs-meta\"\u003E    @property\u003C\u002Fspan\u003E\n    \u003Cspan class=\"hljs-function\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Edef\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003Ecompany\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E(self)\u003C\u002Fspan\u003E:\u003C\u002Fspan\u003E\n        \u003Cspan class=\"hljs-keyword\"\u003Ereturn\u003C\u002Fspan\u003E self._company\n\n\u003Cspan class=\"hljs-meta\"\u003E    @company.setter\u003C\u002Fspan\u003E\n    \u003Cspan class=\"hljs-function\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Edef\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003Ecompany\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E(self, value)\u003C\u002Fspan\u003E:\u003C\u002Fspan\u003E\n        self._company = value\n\n\ne = Employee(\u003Cspan class=\"hljs-string\"\u003E\"Siva\"\u003C\u002Fspan\u003E, \u003Cspan class=\"hljs-string\"\u003E\"Rakuten\"\u003C\u002Fspan\u003E)\nprint(\u003Cspan class=\"hljs-string\"\u003E\"Company name is :\"\u003C\u002Fspan\u003E, e.company)\ne.company = \u003Cspan class=\"hljs-string\"\u003E\"Google\"\u003C\u002Fspan\u003E\nprint(\u003Cspan class=\"hljs-string\"\u003E\"Company name is :\"\u003C\u002Fspan\u003E, e.company)\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Cp\u003E\u003Cbr\u003E\u003C\u002Fp\u003E\n\u003Ch2 id=\"staticmethod-vs-classmethod\"\u003E\u003Ccode\u003E@staticmethod\u003C\u002Fcode\u003E vs \u003Ccode\u003E@classmethod\u003C\u002Fcode\u003E\u003C\u002Fh2\u003E\n\u003Cp\u003EWe can use either annotation to create a class from their methods. \u003Ccode\u003E@classmethod\u003C\u002Fcode\u003E takes class as first argument. As a rule of thumb, if your methods accesses other variables\u002Fmethods in the class, we can use \u003Ccode\u003E@classmethod\u003C\u002Fcode\u003E. \u003Ccode\u003E@staticmethod\u003C\u002Fcode\u003E does not access any of the classes's properties. We can also use \u003Ccode\u003E@staticmethod\u003C\u002Fcode\u003E to create a class like \u003Cem\u003ESnipprt 3:\u003C\u002Fem\u003E.\u003C\u002Fp\u003E\n\u003Cp\u003E\u003Cbr\u003E\u003C\u002Fp\u003E\n\u003Ch2 id=\"typing-in-python\"\u003ETyping in Python\u003C\u002Fh2\u003E\n\u003Cp\u003EIf we want to use class types inside the class, we need to use this import at the top of the file. This will become default in Python 4.\u003C\u002Fp\u003E\n\u003Cpre\u003E\u003Ccode class=\"hljs python language-python\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Efrom\u003C\u002Fspan\u003E __future__ \u003Cspan class=\"hljs-keyword\"\u003Eimport\u003C\u002Fspan\u003E annotations\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Cp\u003EFor example, the return type of \u003Ccode\u003Efrom_birthyear\u003C\u002Fcode\u003E is \u003Ccode\u003EPerson\u003C\u002Fcode\u003E but this only works when we import \u003Ccode\u003Eannotations\u003C\u002Fcode\u003E\u003C\u002Fp\u003E\n\u003Cpre\u003E\u003Ccode class=\"hljs python language-python\"\u003E\u003Cspan class=\"hljs-meta\"\u003E@dataclass(frozen=True)\u003C\u002Fspan\u003E\n\u003Cspan class=\"hljs-class\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Eclass\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003EPerson\u003C\u002Fspan\u003E:\u003C\u002Fspan\u003E\n\n    ...\n\n\u003Cspan class=\"hljs-meta\"\u003E    @classmethod\u003C\u002Fspan\u003E\n    \u003Cspan class=\"hljs-function\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Edef\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003Efrom_birthyear\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E(cls, name: str, birth_year: int)\u003C\u002Fspan\u003E -&gt; Person:\u003C\u002Fspan\u003E\n        \u003Cspan class=\"hljs-keyword\"\u003Ereturn\u003C\u002Fspan\u003E cls(name, date.today().year - birth_year)\n\n    ...\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Ch2 id=\"normal-classes\"\u003ENormal classes\u003C\u002Fh2\u003E\n\u003Cp\u003EFor arbitrary initialization of class objects, we always use \u003Ccode\u003E__init__\u003C\u002Fcode\u003E. We cannot create \u003Ccode\u003E_randomly_fill\u003C\u002Fcode\u003E when we use \u003Ccode\u003E@dataclass\u003C\u002Fcode\u003E.\u003C\u002Fp\u003E\n\u003Cpre\u003E\u003Ccode class=\"hljs python language-python\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Efrom\u003C\u002Fspan\u003E dataclasses \u003Cspan class=\"hljs-keyword\"\u003Eimport\u003C\u002Fspan\u003E dataclass\n\n\u003Cspan class=\"hljs-keyword\"\u003Efrom\u003C\u002Fspan\u003E enum \u003Cspan class=\"hljs-keyword\"\u003Eimport\u003C\u002Fspan\u003E Enum\n\u003Cspan class=\"hljs-keyword\"\u003Efrom\u003C\u002Fspan\u003E typing \u003Cspan class=\"hljs-keyword\"\u003Eimport\u003C\u002Fspan\u003E NamedTuple, List\n\n\n\u003Cspan class=\"hljs-class\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Eclass\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003ECell\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E(str, Enum)\u003C\u002Fspan\u003E:\u003C\u002Fspan\u003E\n    EMPTY = \u003Cspan class=\"hljs-string\"\u003E\" \"\u003C\u002Fspan\u003E\n    BLOCKED = \u003Cspan class=\"hljs-string\"\u003E\"X\"\u003C\u002Fspan\u003E\n    START = \u003Cspan class=\"hljs-string\"\u003E\"S\"\u003C\u002Fspan\u003E\n    GOAL = \u003Cspan class=\"hljs-string\"\u003E\"G\"\u003C\u002Fspan\u003E\n    PATH = \u003Cspan class=\"hljs-string\"\u003E\"*\"\u003C\u002Fspan\u003E\n\n\n\u003Cspan class=\"hljs-string\"\u003E\"\"\"\n# Alternate version\nclass MazeLocation(NamedTuple):\n    row: int\n    column: int\n\"\"\"\u003C\u002Fspan\u003E\n\n\n\u003Cspan class=\"hljs-meta\"\u003E@dataclass\u003C\u002Fspan\u003E\n\u003Cspan class=\"hljs-class\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Eclass\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003EMazeLocation\u003C\u002Fspan\u003E:\u003C\u002Fspan\u003E\n\n    row: int\n    column: int\n\n\n\u003Cspan class=\"hljs-class\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Eclass\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003EMaze\u003C\u002Fspan\u003E:\u003C\u002Fspan\u003E\n    \u003Cspan class=\"hljs-function\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Edef\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003E__init__\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E(\n        self,\n        rows: int = \u003Cspan class=\"hljs-number\"\u003E10\u003C\u002Fspan\u003E,\n        columns: int = \u003Cspan class=\"hljs-number\"\u003E10\u003C\u002Fspan\u003E,\n        sparseness: float = \u003Cspan class=\"hljs-number\"\u003E0.2\u003C\u002Fspan\u003E,\n        start: MazeLocation = MazeLocation\u003Cspan class=\"hljs-params\"\u003E(\u003Cspan class=\"hljs-number\"\u003E0\u003C\u002Fspan\u003E, \u003Cspan class=\"hljs-number\"\u003E0\u003C\u002Fspan\u003E)\u003C\u002Fspan\u003E,\n        goal: MazeLocation = MazeLocation\u003Cspan class=\"hljs-params\"\u003E(\u003Cspan class=\"hljs-number\"\u003E9\u003C\u002Fspan\u003E, \u003Cspan class=\"hljs-number\"\u003E9\u003C\u002Fspan\u003E)\u003C\u002Fspan\u003E,\n    )\u003C\u002Fspan\u003E -&gt; \u003Cspan class=\"hljs-keyword\"\u003ENone\u003C\u002Fspan\u003E:\u003C\u002Fspan\u003E\n        self._rows = rows\n        self._columns = columns\n        self.start: MazeLocation = start\n        self.goal: MazeLocation = goal\n        \u003Cspan class=\"hljs-comment\"\u003E# fill grid with empty cells\u003C\u002Fspan\u003E\n        self._grid: List[List[Cell]] = [\n            [Cell.EMPTY \u003Cspan class=\"hljs-keyword\"\u003Efor\u003C\u002Fspan\u003E c \u003Cspan class=\"hljs-keyword\"\u003Ein\u003C\u002Fspan\u003E range(columns)] \u003Cspan class=\"hljs-keyword\"\u003Efor\u003C\u002Fspan\u003E r \u003Cspan class=\"hljs-keyword\"\u003Ein\u003C\u002Fspan\u003E range(rows)\n        ]\n        self._randomly_fill(rows, columns, sparseness)\n        self._grid[start.row][start.column] = Cell.START\n        self._grid[goal.row][goal.column] = Cell.GOAL\n\n    \u003Cspan class=\"hljs-function\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Edef\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003E_randomly_fill\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E(self, rows: int, columns: int, sparseness: float)\u003C\u002Fspan\u003E:\u003C\u002Fspan\u003E\n        \u003Cspan class=\"hljs-keyword\"\u003Efor\u003C\u002Fspan\u003E row \u003Cspan class=\"hljs-keyword\"\u003Ein\u003C\u002Fspan\u003E range(rows):\n            \u003Cspan class=\"hljs-keyword\"\u003Efor\u003C\u002Fspan\u003E column \u003Cspan class=\"hljs-keyword\"\u003Ein\u003C\u002Fspan\u003E range(columns):\n                \u003Cspan class=\"hljs-keyword\"\u003Eif\u003C\u002Fspan\u003E random.uniform(\u003Cspan class=\"hljs-number\"\u003E0\u003C\u002Fspan\u003E, \u003Cspan class=\"hljs-number\"\u003E1.0\u003C\u002Fspan\u003E) &lt; \u003Cspan class=\"hljs-number\"\u003E0.2\u003C\u002Fspan\u003E:\n                    self._grid[row][column] = Cell.BLOCKED\n\n    \u003Cspan class=\"hljs-function\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Edef\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003E__str__\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E(self)\u003C\u002Fspan\u003E -&gt; str:\u003C\u002Fspan\u003E\n        output: str = \u003Cspan class=\"hljs-string\"\u003E\"\"\u003C\u002Fspan\u003E\n        \u003Cspan class=\"hljs-keyword\"\u003Efor\u003C\u002Fspan\u003E row \u003Cspan class=\"hljs-keyword\"\u003Ein\u003C\u002Fspan\u003E self._grid:\n            output += \u003Cspan class=\"hljs-string\"\u003E\"\"\u003C\u002Fspan\u003E.join([c.value \u003Cspan class=\"hljs-keyword\"\u003Efor\u003C\u002Fspan\u003E c \u003Cspan class=\"hljs-keyword\"\u003Ein\u003C\u002Fspan\u003E row]) + \u003Cspan class=\"hljs-string\"\u003E\"\\n\"\u003C\u002Fspan\u003E\n        \u003Cspan class=\"hljs-keyword\"\u003Ereturn\u003C\u002Fspan\u003E output\n\n\nmaze = Maze()\nprint(maze)\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E\n\u003Cp\u003EAnother small note about property in Python class.\u003C\u002Fp\u003E\n\u003Cul\u003E\n\u003Cli\u003EIf it's a property, we can call the property directly without parans\u003C\u002Fli\u003E\n\u003C\u002Ful\u003E\n\u003Cp\u003EExample\u003C\u002Fp\u003E\n\u003Cpre\u003E\u003Ccode class=\"hljs python language-python\"\u003E\u003Cspan class=\"hljs-class\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Eclass\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003EStack\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E(Generic[T])\u003C\u002Fspan\u003E:\u003C\u002Fspan\u003E\n    \u003Cspan class=\"hljs-function\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Edef\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003E__init__\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E(self)\u003C\u002Fspan\u003E -&gt; \u003Cspan class=\"hljs-keyword\"\u003ENone\u003C\u002Fspan\u003E:\u003C\u002Fspan\u003E\n        self._container = []\n\n    \u003Cspan class=\"hljs-function\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Edef\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003Eempty\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E(self)\u003C\u002Fspan\u003E -&gt; bool:\u003C\u002Fspan\u003E\n        \u003Cspan class=\"hljs-keyword\"\u003Ereturn\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-keyword\"\u003Enot\u003C\u002Fspan\u003E self._container\n\n    ...\n\na = Stack[int]()\na.push(\u003Cspan class=\"hljs-number\"\u003E10\u003C\u002Fspan\u003E)\nprint(a.empty())\n\n\n\u003Cspan class=\"hljs-class\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Eclass\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003EStackWithEmptyProperty\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E(Generic[T])\u003C\u002Fspan\u003E:\u003C\u002Fspan\u003E\n    \u003Cspan class=\"hljs-function\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Edef\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003E__init__\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E(self)\u003C\u002Fspan\u003E -&gt; \u003Cspan class=\"hljs-keyword\"\u003ENone\u003C\u002Fspan\u003E:\u003C\u002Fspan\u003E\n        self._container = []\n\n\u003Cspan class=\"hljs-meta\"\u003E    @property\u003C\u002Fspan\u003E\n    \u003Cspan class=\"hljs-function\"\u003E\u003Cspan class=\"hljs-keyword\"\u003Edef\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-title\"\u003Eempty\u003C\u002Fspan\u003E\u003Cspan class=\"hljs-params\"\u003E(self)\u003C\u002Fspan\u003E -&gt; bool:\u003C\u002Fspan\u003E\n        \u003Cspan class=\"hljs-keyword\"\u003Ereturn\u003C\u002Fspan\u003E \u003Cspan class=\"hljs-keyword\"\u003Enot\u003C\u002Fspan\u003E self._container\n\n    ...\n\na = Stack[int]()\na.push(\u003Cspan class=\"hljs-number\"\u003E10\u003C\u002Fspan\u003E)\nprint(a.empty)\u003C\u002Fcode\u003E\u003C\u002Fpre\u003E",permalink:"advanced-python"}}]};if('serviceWorker' in navigator)navigator.serviceWorker.register('/service-worker.js');(function(){try{eval("async function x(){}");var main="/client/client.7e23340b.js"}catch(e){main="/client/legacy/client.1f475cec.js"};var s=document.createElement("script");try{new Function("if(0)import('')")();s.src=main;s.type="module";s.crossOrigin="use-credentials";}catch(e){s.src="/client/shimport@2.0.4.js";s.setAttribute("data-main",main);}document.head.appendChild(s);}());</script> 
