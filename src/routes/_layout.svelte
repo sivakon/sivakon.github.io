@@ -135,7 +135,7 @@ ul li a:hover:after {
             <a href="/" class="logo">codex</a>
             <ul class="navbar">
                 <li><a href="/about">about</a></li>
-                <li><a href="https://github.com/sivakon/sivakon.github.io/tree/dev" target="_blank">github</a></li>
+                <li><a href="https://github.com/trickster/trickster.github.io/tree/dev" target="_blank">github</a></li>
             </ul>
         </nav>
     </div>
